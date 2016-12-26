@@ -1,0 +1,28 @@
+{% load staticfiles bootstrap3 %}
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock title %}</title>
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    {% block head_css %}
+    {% endblock head_css %}
+    {% block head_script %}
+    {% endblock head_script %}
+    {% block meta %}{% endblock meta %}
+  </head>
+  <body>
+    {% bootstrap_messages %}
+    {% block body %}
+      <div class="container">
+        {% include 'include/header.html' %}
+        {% block content %}
+        {% endblock content %}
+        {% include 'include/footer.html' %}
+      </div>
+    {% endblock body %}
+    {% block script_end_body %}{% endblock script_end_body %}
+  </body>
+</html>
+

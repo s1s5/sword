@@ -8,6 +8,8 @@ services:
     command: ./run_web.sh
     volumes:
       - "./sword:/app"
+      - "data:/data/static_root"
+      - "data:/data/media_root"
     links:
       - db
     depends_on:
