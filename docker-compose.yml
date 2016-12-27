@@ -28,6 +28,13 @@ services:
     volumes:
       - "data:/postgres/data"  # /var/lib/postgresql/data
 
+  postfix:
+    build:
+      context: ./postfix
+      dockerfile: Dockerfile
+    volumes:
+      - /etc/localtime:/etc/localtime:ro  # ホストと同じタイムゾーン
+      - ./postfix/setup.py:/setup.py:ro
 volumes:
   data:
 
