@@ -1,0 +1,60 @@
+{% load static %}
+<script type='text/javascript'>
+ var Module = {
+     preRun: [
+     ],
+     postRun: [
+         onModuleLoadSuccessed,
+     ],
+     dynamicLibraries: [
+     ],
+     canvas: (function() {
+         var canvas = document.getElementById('canvas');
+         if (canvas) {
+             canvas.addEventListener("webglcontextlost", function(e) {
+                 alert('WebGL context lost. You will need to reload the page.');
+                 e.preventDefault();
+             }, false);
+         }
+         return canvas;
+     })(),
+     setStatus: function(text) {
+         if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
+         if (text === Module.setStatus.text) return;
+         var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+         var now = Date.now();
+         if (m && now - Date.now() < 30) return; // if this is a progress update, skip it if too soon
+         if (m) {
+             text = m[1];
+         } else if (text == "") {
+         }
+     }
+ };
+ Module.setStatus('Downloading...');
+</script>
+
+<script type='text/javascript'>
+ (function() {
+     var memoryInitializer = '{% static "js/openssl.js.mem" %}';
+     if (typeof Module['locateFile'] === 'function') {
+         memoryInitializer = Module['locateFile'](memoryInitializer);
+     } else if (Module['memoryInitializerPrefixURL']) {
+         memoryInitializer = Module['memoryInitializerPrefixURL'] + memoryInitializer;
+     }
+     var xhr = Module['memoryInitializerRequest'] = new XMLHttpRequest();
+     xhr.open('GET', memoryInitializer, true);
+     xhr.responseType = 'arraybuffer';
+     xhr.send(null);
+ })();
+
+ $.ajaxSetup({
+     cache: true
+ });
+
+ $.getScript("{% static "js/openssl.js" %}")
+     .done(function( script, textStatus ) {
+     })
+     .fail(function( jqxhr, settings, exception ) {
+         onModuleLoadFailed();
+     });
+</script>
