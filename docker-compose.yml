@@ -2,14 +2,16 @@ version: "2.0"
 
 services:
   sword:
+    environment:
+      DB_TYPE: postgres
     build:
       context: ./sword
       dockerfile: Dockerfile
     command: ./run_web.sh
     volumes:
-      - "./sword:/app"
-      - "data:/data/static_root"
-      - "data:/data/media_root"
+      - "./sword:/app:ro"
+      - "sword_static:/data/static"
+      - "sword_media:/data/media"
     links:
       - db
     depends_on:
@@ -37,4 +39,5 @@ services:
       - ./postfix/setup.py:/setup.py:ro
 volumes:
   data:
-
+  sword_static:
+  sword_media:

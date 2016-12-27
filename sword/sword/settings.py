@@ -77,17 +77,27 @@ WSGI_APPLICATION = 'sword.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': os.environ.get('DB_PORT_5432_TCP_ADDR', 'db'),
-        'PORT': os.environ.get('DB_PORT_5432_TCP_PORT', 5432),
+db_type = os.environ.get('DB_TYPE', 'sqlite')
+if db_type == 'sqlite':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
+elif db_type == 'postgres':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'postgres',
+            'USER': 'postgres',
+            'PASSWORD': 'postgres',
+            'HOST': os.environ.get('DB_PORT_5432_TCP_ADDR', 'db'),
+            'PORT': os.environ.get('DB_PORT_5432_TCP_PORT', 5432),
+        }
+    }
+else:
+    raise Exception('unknown database type "{}"'.format(db_type))
 
 
 # Password validation
@@ -125,8 +135,9 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
-
+STATIC_ROOT = os.environ.get(
+    'STATIC_ROOT', os.path.join(BASE_DIR, 'static_root'))
 STATIC_URL = '/static/'
-STATIC_ROOT = '/data/static_root'
+MEDIA_ROOT = os.environ.get(
+    'MEDIA_ROOT', os.path.join(BASE_DIR, 'media_root'))
 MEDIA_URL = '/media/'
-MEDIA_ROOT = '/data/media_root'
